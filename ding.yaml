@@ -20,7 +20,7 @@ paths:
       x-speakeasy-usage-example:
         title: Send a code
         description: |
-          This example shows how to send an OTP code to a user's phone number.
+          Send an OTP code to a user's phone number.
         position: 1
       summary: Create an authentication
       tags:
@@ -46,6 +46,11 @@ paths:
                 $ref: '#/components/schemas/CreateAuthenticationRequest'
   /check:
     post:
+      x-speakeasy-usage-example:
+        title: Check a code
+        description: |
+          Check that a code entered by a user is valid.
+        position: 2
       summary: Check an authentication code
       tags:
         - OTP
@@ -70,6 +75,11 @@ paths:
               $ref: '#/components/schemas/CreateCheckRequest'
   /retry:
     post:
+      x-speakeasy-usage-example:
+        title: Retry an authentication
+        description: |
+          Retry an authentication if a user has not received the code.
+        position: 3
       summary: Retry an authentication
       tags:
         - OTP
