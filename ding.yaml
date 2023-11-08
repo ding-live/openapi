@@ -1,0 +1,377 @@
+openapi: 3.0.1
+security:
+  - APIKey: []
+info:
+  title: Ding
+  version: 1.0.0
+  description: 'Ding phone number authentication APIs'
+servers:
+  - url: 'https://api.ding.live/v1'
+    description: The production Ding API server
+    x-speakeasy-server-id: production
+tags:
+  - name: OTP
+    description: Send OTP codes to your users using their phone numbers.
+  - name: Lookup
+    description: Retrieve up-to-date metadata about a specific phone number
+paths:
+  /authentication:
+    post:
+      x-speakeasy-usage-example:
+        title: Send a code
+        description: |
+          This example shows how to send an OTP code to a user's phone number.
+        position: 1
+      summary: Create an authentication
+      tags:
+        - OTP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAuthenticationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: create-autentication
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAuthenticationRequest'
+  /check:
+    post:
+      summary: Check an authentication code
+      tags:
+        - OTP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCheckResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: check
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckRequest'
+  /retry:
+    post:
+      summary: Retry an authentication
+      tags:
+        - OTP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetryAuthenticationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: retry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetryAuthenticationRequest'
+  /lookup:
+    post:
+      summary: Lookup a phone number
+      tags:
+        - Lookup
+      parameters:
+        - in: header
+          name: customer-uuid
+          schema:
+            type: string
+            format: uuid
+            description: Your customer UUID, which can be found in the API settings in the dashboard.
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LookupResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: lookup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LookupRequest'
+components:
+  schemas:
+    LookupRequest:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          format: phone_number
+          example: '+1234567890'
+          description: An E.164 formatted phone number to lookup.
+    LookupResponse:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          format: phone_number
+          example: '+1234567890'
+          description: An E.164 formatted phone number.
+        mcc:
+          type: string
+          example: '310'
+          description: The mobile country code of the phone number.
+        mnc:
+          type: string
+          example: '410'
+          description: The mobile network code of the phone number.
+        carrier:
+          type: string
+          example: 'AT&T'
+          description: The carrier of the phone number.
+        country_code:
+          type: string
+          example: 'US'
+          description: The ISO 3166-1 alpha-2 country code of the phone number.
+        number_ported:
+          type: boolean
+          description: Whether the phone number has been ported.
+        line_type:
+          type: string
+          example: 'Mobile'
+          description: The type of phone line.
+          enum:
+          - FixedLine
+          - Mobile
+          - TollFree
+          - PremiumRate
+          - SharedCost
+          - Voip
+          - Pager
+          - VoiceMail
+          - UniversalAccess
+          - Service
+          - Unknown
+    RetryAuthenticationResponse:
+      type: object
+      properties:
+        authentication_uuid:
+          type: string
+          format: uuid
+          description: The UUID of the corresponding authentication.
+        status:
+          type: string
+          description: The status of the authentication.
+          example: approved
+          enum:
+            - approved
+            - denied
+            - no_attempt
+            - rate_limited
+            - expired_auth
+            - already_validated
+        created_at:
+          type: string
+          format: date-time
+        next_retry_at:
+          type: string
+          format: date-time
+          description: The time at which the next retry will be available.
+        remaining_retry:
+          type: integer
+          minimum: 0
+          example: 3
+          description: The number of retries remaining.
+    RetryAuthenticationRequest:
+      type: object
+      required:
+        - customer_uuid
+        - authentication_uuid
+      properties:
+        customer_uuid:
+          type: string
+          format: uuid
+          description: Your customer UUID, which can be found in the API settings in the dashboard.
+        authentication_uuid:
+          type: string
+          format: uuid
+          description: The authentication UUID that was returned when you created the authentication.
+    CreateCheckResponse:
+      type: object
+      properties:
+        authentication_uuid:
+          type: string
+          format: uuid
+          description: The UUID of the corresponding authentication.
+        status:
+          type: string
+          description: A status representing the result of the check.
+          example: valid
+          enum:
+          - valid
+          - invalid
+          - without_attempt
+          - rate_limited
+          - already_validated
+          - expired_auth
+    CreateCheckRequest:
+      type: object
+      required:
+        - customer_uuid
+        - authentication_uuid
+        - check_code
+      properties:
+        customer_uuid:
+          type: string
+          format: uuid
+          description: Your customer UUID, which can be found in the API settings in the dashboard.
+        authentication_uuid:
+          type: string
+          format: uuid
+          description: The authentication UUID that was returned when you created the authentication.
+        check_code:
+          type: string
+          example: '123456'
+          description: The code that the user entered.
+    CreateAuthenticationRequest:
+      type: object
+      required:
+        - customer_uuid
+        - phone_number
+      properties:
+        customer_uuid:
+          type: string
+          format: uuid
+          description: Your customer UUID, which can be found in the API settings in the dashboard.
+        phone_number:
+          type: string
+          format: phone_number
+          example: '+1234567890'
+          description: An E.164 formatted phone number to send the OTP to.
+        ip:
+          type: string
+          format: ipv4
+          description: The IP address of the user's device.
+        device_id:
+          type: string
+          example: '1234567890'
+          description: 
+            Unique identifier for the user's device. For Android, this corresponds to the ANDROID_ID and for iOS, this corresponds to the identifierForVendor.
+        device_type:
+          type: string
+          enum:
+            - IOS
+            - ANDROID
+            - WEB
+          description: The type of device the user is using.
+        app_version:
+          type: string
+          example: '1.0.0'
+          description: The version of your app.
+          x-speakeasy-usage-example: false
+        callback_url:
+          type: string
+          example: 'https://example.com/callback'
+          format: url
+          description: A webhook URL to which delivery statuses will be sent.
+          x-speakeasy-usage-example: false
+        app_realm:
+          type: string
+          example: '1234567890'
+          description: The Android SMS Retriever API hash code that identifies your app. 
+            This allows you to automatically retrieve and fill the OTP code on Android devices.
+        os_version:
+          type: string
+          example: '13.2.1'
+          description: The version of the user's operating system.
+        device_model:
+          type: string
+          example: 'iPhone 15 Pro'
+          description: The model of the user's device.
+        is_returning_user:
+          type: boolean
+          description: Whether the user is a returning user on your app.
+    CreateAuthenticationResponse:
+      type: object
+      description: A successful response to an authentication creation request.
+      properties:
+        authentication_uuid:
+          type: string
+          format: uuid
+          description: A unique identifier for the authentication that you can use on the /check and /retry endpoints.
+        status:
+          type: string
+          description: The status of the authentication.
+          enum:
+            - pending
+            - rate_limited
+            - spam_detected
+        created_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+          description: The time at which the authentication expires and can no longer be checked or retried.
+    # -------------------------------------------------------------------------
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: invalid_phone_number
+          enum:
+            - invalid_phone_number
+            - internal_server_error
+            - bad_request
+            - account_invalid
+            - negative_balance
+            - invalid_line
+            - unsupported_region
+            - invalid_auth_uuid
+            - invalid_app_realm
+            - unsupported_app_realm_device_type
+            - app_realm_require_device_type
+            - blocked_number
+            - invalid_app_version
+            - invalid_os_version
+            - invalid_device_model
+            - invalid_device_id
+        message:
+          type: string
+          example: +0 is not a valid phone number
+        doc_url:
+          type: string
+          description: A link to the documentation that describes the error.
+          example: 'https://docs.ding.live/api/error-handling#invalid_phone_number'
+  securitySchemes:
+    APIKey:
+      name: x-api-key
+      type: apiKey
+      in: header
+      x-speakeasy-example: YOUR_API_KEY
