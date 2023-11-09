@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 security:
   - APIKey: []
 info:
@@ -22,7 +22,6 @@ paths:
         description: |
           Send an OTP code to a user's phone number.
         position: 1
-      x-speakeasy-name-override: send
       summary: Create an authentication
       tags:
         - OTP
@@ -143,7 +142,7 @@ components:
         phone_number:
           type: string
           format: phone_number
-          example: '+1234567890'
+          examples: ['+1234567890']
           description: An E.164 formatted phone number to lookup.
     LookupResponse:
       type: object
@@ -151,30 +150,30 @@ components:
         phone_number:
           type: string
           format: phone_number
-          example: '+1234567890'
+          examples: ['+1234567890']
           description: An E.164 formatted phone number.
         mcc:
           type: string
-          example: '310'
+          examples: ['310']
           description: The mobile country code of the phone number.
         mnc:
           type: string
-          example: '410'
+          examples: ['410']
           description: The mobile network code of the phone number.
         carrier:
           type: string
-          example: 'AT&T'
+          examples: ['AT&T']
           description: The carrier of the phone number.
         country_code:
           type: string
-          example: 'US'
+          examples: ['US']
           description: The ISO 3166-1 alpha-2 country code of the phone number.
         number_ported:
           type: boolean
           description: Whether the phone number has been ported.
         line_type:
           type: string
-          example: 'Mobile'
+          examples: ['Mobile']
           description: The type of phone line.
           enum:
           - FixedLine
@@ -198,7 +197,7 @@ components:
         status:
           type: string
           description: The status of the authentication.
-          example: approved
+          examples: ['approved']
           enum:
             - approved
             - denied
@@ -216,7 +215,7 @@ components:
         remaining_retry:
           type: integer
           minimum: 0
-          example: 3
+          examples: [3]
           description: The number of retries remaining.
     RetryAuthenticationRequest:
       type: object
@@ -242,7 +241,7 @@ components:
         status:
           type: string
           description: A status representing the result of the check.
-          example: valid
+          examples: ['valid']
           enum:
           - valid
           - invalid
@@ -267,7 +266,7 @@ components:
           description: The authentication UUID that was returned when you created the authentication.
         check_code:
           type: string
-          example: '123456'
+          examples: ['123456']
           description: The code that the user entered.
     CreateAuthenticationRequest:
       type: object
@@ -282,7 +281,7 @@ components:
         phone_number:
           type: string
           format: phone_number
-          example: '+1234567890'
+          examples: ['+1234567890']
           description: An E.164 formatted phone number to send the OTP to.
         ip:
           type: string
@@ -347,7 +346,7 @@ components:
       properties:
         code:
           type: string
-          example: invalid_phone_number
+          examples: ['invalid_phone_number']
           enum:
             - invalid_phone_number
             - internal_server_error
@@ -367,11 +366,11 @@ components:
             - invalid_device_id
         message:
           type: string
-          example: +0 is not a valid phone number
+          examples: ['+0 is not a valid phone number']
         doc_url:
           type: string
           description: A link to the documentation that describes the error.
-          example: 'https://docs.ding.live/api/error-handling#invalid_phone_number'
+          examples: ['https://docs.ding.live/api/error-handling#invalid_phone_number']
   securitySchemes:
     APIKey:
       name: x-api-key
