@@ -22,7 +22,7 @@ paths:
         description: |
           Send an OTP code to a user's phone number.
         position: 1
-      summary: Create an authentication
+      summary: Send a code
       tags:
         - OTP
       responses:
@@ -51,7 +51,7 @@ paths:
         description: |
           Check that a code entered by a user is valid.
         position: 2
-      summary: Check an authentication code
+      summary: Check a code
       tags:
         - OTP
       responses:
@@ -76,11 +76,11 @@ paths:
   /retry:
     post:
       x-speakeasy-usage-example:
-        title: Retry an authentication
+        title: Perform a retry
         description: |
-          Retry an authentication if a user has not received the code.
+          Perform a retry if a user has not received the code.
         position: 3
-      summary: Retry an authentication
+      summary: Perform a retry
       tags:
         - OTP
       responses:
@@ -102,9 +102,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RetryAuthenticationRequest'
-  /lookup:
-    post:
-      summary: Lookup a phone number
+  /lookup/{phone_number}:
+    get:
+      summary: Lookup a number
       tags:
         - Lookup
       parameters:
@@ -115,6 +115,13 @@ paths:
             format: uuid
             description: Your customer UUID, which can be found in the API settings in the dashboard.
           required: true
+        - in: path
+          name: phone_number
+          required: true
+          schema:
+            type: string
+            format: phone_number
+            description: An E.164 formatted phone number to lookup.
       responses:
         '200':
           description: OK
@@ -129,21 +136,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: lookup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LookupRequest'
 components:
   schemas:
-    LookupRequest:
-      type: object
-      properties:
-        phone_number:
-          type: string
-          format: phone_number
-          examples: ['+1234567890']
-          description: An E.164 formatted phone number to lookup.
     LookupResponse:
       type: object
       properties:
@@ -196,7 +190,14 @@ components:
           description: The UUID of the corresponding authentication.
         status:
           type: string
-          description: The status of the authentication.
+          description: > 
+            The status of the retry. Possible values are:
+              * `approved` - The retry was approved and a new code was sent.
+              * `denied` - The retry was denied.
+              * `no_attempt` - No attempt was sent yet so we cannot perform a retry.
+              * `rate_limited` - The authentication was rate limited and cannot be retried.
+              * `expired_auth` - The authentication has expired and cannot be retried.
+              * `already_validated` - The authentication has already been validated.
           examples: ['approved']
           enum:
             - approved
@@ -240,8 +241,15 @@ components:
           description: The UUID of the corresponding authentication.
         status:
           type: string
-          description: A status representing the result of the check.
           examples: ['valid']
+          description: >
+            The status of the check. Possible values are:
+              * `valid` - The code is valid.
+              * `invalid` - The code is invalid.
+              * `without_attempt` - No attempt was sent yet so we cannot perform a check.
+              * `rate_limited` - The authentication was rate limited and cannot be checked.
+              * `already_validated` - The authentication has already been validated.
+              * `expired_auth` - The authentication has expired and cannot be checked.
           enum:
           - valid
           - invalid
@@ -328,7 +336,11 @@ components:
           description: A unique identifier for the authentication that you can use on the /check and /retry endpoints.
         status:
           type: string
-          description: The status of the authentication.
+          description: >
+            The status of the authentication. Possible values are:
+              * `pending` - The OTP code is being sent.
+              * `rate_limited` - This user is rate-limited and cannot receive another code.
+              * `spam_detected` - This attempt is flagged as spam. Go to the dashboard for more details.
           enum:
             - pending
             - rate_limited
