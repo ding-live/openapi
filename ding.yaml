@@ -22,6 +22,7 @@ paths:
         description: |
           Send an OTP code to a user's phone number.
         position: 1
+      x-speakeasy-name-override: send
       summary: Create an authentication
       tags:
         - OTP
