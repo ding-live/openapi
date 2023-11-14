@@ -4,9 +4,9 @@ security:
 info:
   title: Ding
   version: 1.0.0
-  description: 'The OTP API allows you to send authentication codes to your users using their phone numbers'
+  description: "The OTP API allows you to send authentication codes to your users using their phone numbers."
 servers:
-  - url: 'https://api.ding.live/v1'
+  - url: "https://api.ding.live/v1"
     description: The production Ding API server
     x-speakeasy-server-id: production
 tags:
@@ -26,24 +26,24 @@ paths:
       tags:
         - OTP
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateAuthenticationResponse'
-        '400':
+                $ref: "#/components/schemas/CreateAuthenticationResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       operationId: create-autentication
       requestBody:
         content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateAuthenticationRequest'
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAuthenticationRequest"
   /check:
     post:
       x-speakeasy-usage-example:
@@ -55,24 +55,24 @@ paths:
       tags:
         - OTP
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateCheckResponse'
-        '400':
+                $ref: "#/components/schemas/CreateCheckResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       operationId: check
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateCheckRequest'
+              $ref: "#/components/schemas/CreateCheckRequest"
   /retry:
     post:
       x-speakeasy-usage-example:
@@ -84,27 +84,27 @@ paths:
       tags:
         - OTP
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RetryAuthenticationResponse'
-        '400':
+                $ref: "#/components/schemas/RetryAuthenticationResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       operationId: retry
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RetryAuthenticationRequest'
+              $ref: "#/components/schemas/RetryAuthenticationRequest"
   /lookup/{phone_number}:
     get:
-      summary: Lookup a number
+      summary: Perform a phone number lookup
       tags:
         - Lookup
       parameters:
@@ -121,20 +121,20 @@ paths:
           schema:
             type: string
             format: phone_number
-            description: An E.164 formatted phone number to lookup.
+            description: An E.164 formatted phone number to look up.
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LookupResponse'
-        '400':
+                $ref: "#/components/schemas/LookupResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       operationId: lookup
 components:
   schemas:
@@ -144,43 +144,43 @@ components:
         phone_number:
           type: string
           format: phone_number
-          examples: ['+1234567890']
+          examples: ["+1234567890"]
           description: An E.164 formatted phone number.
         mcc:
           type: string
-          examples: ['310']
+          examples: ["310"]
           description: The mobile country code of the phone number.
         mnc:
           type: string
-          examples: ['410']
+          examples: ["410"]
           description: The mobile network code of the phone number.
         carrier:
           type: string
-          examples: ['AT&T']
+          examples: ["AT&T"]
           description: The carrier of the phone number.
         country_code:
           type: string
-          examples: ['US']
+          examples: ["US"]
           description: The ISO 3166-1 alpha-2 country code of the phone number.
         number_ported:
           type: boolean
           description: Whether the phone number has been ported.
         line_type:
           type: string
-          examples: ['Mobile']
+          examples: ["Mobile"]
           description: The type of phone line.
           enum:
-          - FixedLine
-          - Mobile
-          - TollFree
-          - PremiumRate
-          - SharedCost
-          - Voip
-          - Pager
-          - VoiceMail
-          - UniversalAccess
-          - Service
-          - Unknown
+            - FixedLine
+            - Mobile
+            - TollFree
+            - PremiumRate
+            - SharedCost
+            - Voip
+            - Pager
+            - VoiceMail
+            - UniversalAccess
+            - Service
+            - Unknown
     RetryAuthenticationResponse:
       type: object
       properties:
@@ -190,15 +190,15 @@ components:
           description: The UUID of the corresponding authentication.
         status:
           type: string
-          description: > 
+          description: >
             The status of the retry. Possible values are:
               * `approved` - The retry was approved and a new code was sent.
               * `denied` - The retry was denied.
-              * `no_attempt` - No attempt was sent yet so we cannot perform a retry.
+              * `no_attempt` - No attempt was sent yet so a retry cannot be completed.
               * `rate_limited` - The authentication was rate limited and cannot be retried.
               * `expired_auth` - The authentication has expired and cannot be retried.
               * `already_validated` - The authentication has already been validated.
-          examples: ['approved']
+          examples: ["approved"]
           enum:
             - approved
             - denied
@@ -217,7 +217,7 @@ components:
           type: integer
           minimum: 0
           examples: [3]
-          description: The number of retries remaining.
+          description: The number of remaining retries.
     RetryAuthenticationRequest:
       type: object
       required:
@@ -241,22 +241,22 @@ components:
           description: The UUID of the corresponding authentication.
         status:
           type: string
-          examples: ['valid']
+          examples: ["valid"]
           description: >
             The status of the check. Possible values are:
               * `valid` - The code is valid.
               * `invalid` - The code is invalid.
-              * `without_attempt` - No attempt was sent yet so we cannot perform a check.
+              * `without_attempt` - No attempt was sent yet, so a check cannot be completed.
               * `rate_limited` - The authentication was rate limited and cannot be checked.
               * `already_validated` - The authentication has already been validated.
               * `expired_auth` - The authentication has expired and cannot be checked.
           enum:
-          - valid
-          - invalid
-          - without_attempt
-          - rate_limited
-          - already_validated
-          - expired_auth
+            - valid
+            - invalid
+            - without_attempt
+            - rate_limited
+            - already_validated
+            - expired_auth
     CreateCheckRequest:
       type: object
       required:
@@ -274,7 +274,7 @@ components:
           description: The authentication UUID that was returned when you created the authentication.
         check_code:
           type: string
-          examples: ['123456']
+          examples: ["123456"]
           description: The code that the user entered.
     CreateAuthenticationRequest:
       type: object
@@ -289,7 +289,7 @@ components:
         phone_number:
           type: string
           format: phone_number
-          examples: ['+1234567890']
+          examples: ["+1234567890"]
           description: An E.164 formatted phone number to send the OTP to.
         ip:
           type: string
@@ -297,8 +297,7 @@ components:
           description: The IP address of the user's device.
         device_id:
           type: string
-          description: 
-            Unique identifier for the user's device. For Android, this corresponds to the ANDROID_ID and for iOS, this corresponds to the identifierForVendor.
+          description: Unique identifier for the user's device. For Android, this corresponds to the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
         device_type:
           type: string
           enum:
@@ -308,18 +307,19 @@ components:
           description: The type of device the user is using.
         app_version:
           type: string
-          description: The version of your app.
+          description: The version of your application.
         callback_url:
           type: string
           format: url
           description: A webhook URL to which delivery statuses will be sent.
         app_realm:
           type: string
-          description: The Android SMS Retriever API hash code that identifies your app. 
+          description:
+            The Android SMS Retriever API hash code that identifies your app.
             This allows you to automatically retrieve and fill the OTP code on Android devices.
         os_version:
           type: string
-          description: The version of the user's operating system.
+          description: The version of the user's device operating system.
         device_model:
           type: string
           description: The model of the user's device.
@@ -358,22 +358,22 @@ components:
       properties:
         code:
           type: string
-          examples: ['invalid_phone_number']
+          examples: ["invalid_phone_number"]
           description: >
             A machine-readable code that describes the error. Possible values are:
               * `invalid_phone_number` - This is not a valid E.164 number.
               * `internal_server_error` - An internal server error occurred.
               * `bad_request` - The request was malformed.
-              * `account_invalid` - The customer UUID you provided is invalid.
+              * `account_invalid` - The provided customer UUID is invalid.
               * `negative_balance` - You have a negative balance.
               * `invalid_line` - Ding does not support this type of phone number.
               * `unsupported_region` - Ding does not support this region yet.
-              * `invalid_auth_uuid` - The authentication UUID you provided is invalid.
-              * `blocked_number` - The phone number you provided is in the blocklist.
-              * `invalid_app_version` - The app version you provided is invalid.
-              * `invalid_os_version` - The OS version you provided is invalid.
-              * `invalid_device_model` - The device model you provided is invalid.
-              * `invalid_device_id` - The device ID you provided is invalid.
+              * `invalid_auth_uuid` - The provided authentication UUID is invalid.
+              * `blocked_number` - The phone number is in the blocklist.
+              * `invalid_app_version` - The provided application version is invalid.
+              * `invalid_os_version` - The provided OS version is invalid.
+              * `invalid_device_model` - The provided device model is invalid.
+              * `invalid_device_id` - The provided device ID is invalid.
           enum:
             - invalid_phone_number
             - internal_server_error
@@ -393,12 +393,13 @@ components:
             - invalid_device_id
         message:
           type: string
-          examples: ['+0 is not a valid phone number']
+          examples: ["+0 is not a valid phone number"]
           description: A human-readable message that describes the error.
         doc_url:
           type: string
           description: A link to the documentation that describes the error.
-          examples: ['https://docs.ding.live/api/error-handling#invalid_phone_number']
+          examples:
+            ["https://docs.ding.live/api/error-handling#invalid_phone_number"]
   securitySchemes:
     APIKey:
       name: x-api-key
