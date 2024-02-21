@@ -8,7 +8,6 @@ info:
 servers:
   - url: "https://api.ding.live/v1"
     description: The production Ding API server
-    x-speakeasy-server-id: production
 tags:
   - name: OTP
     description: Send OTP codes to your users using their phone numbers.
@@ -267,7 +266,7 @@ components:
         customer_uuid:
           type: string
           format: uuid
-          description: Your customer UUID, which can be found in the API settings in the dashboard.
+          description: Your customer UUID, which can be found in the API settings in the Dashboard.
         authentication_uuid:
           type: string
           format: uuid
@@ -399,7 +398,7 @@ components:
           type: string
           description: A link to the documentation that describes the error.
           examples:
-            ["https://docs.ding.live/api/error-handling#invalid_phone_number"]
+            ["https://docs.ding.live/api-reference/errors#invalid_phone_number"]
   securitySchemes:
     APIKey:
       name: x-api-key
