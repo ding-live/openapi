@@ -37,7 +37,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-      operationId: create-autentication
+      operationId: create-authentication
       requestBody:
         content:
           application/json:
@@ -325,6 +325,9 @@ components:
         is_returning_user:
           type: boolean
           description: Whether the user is a returning user on your app.
+        template_id:
+          type: string
+          description: The template id associated with the message content variant to be sent.
     CreateAuthenticationResponse:
       type: object
       description: A successful response to an authentication creation request.
@@ -373,6 +376,7 @@ components:
               * `invalid_os_version` - The provided OS version is invalid.
               * `invalid_device_model` - The provided device model is invalid.
               * `invalid_device_id` - The provided device ID is invalid.
+              * `invalid_template_id` - The provided template ID is invalid.
           enum:
             - invalid_phone_number
             - internal_server_error
@@ -390,6 +394,7 @@ components:
             - invalid_os_version
             - invalid_device_model
             - invalid_device_id
+            - invalid_template_id
         message:
           type: string
           examples: ["+0 is not a valid phone number"]
