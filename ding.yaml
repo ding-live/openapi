@@ -72,6 +72,30 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateCheckRequest"
+  /authentication/feedback:
+    post:
+      summary: Send feedback
+      tags:
+        - OTP
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackResponse"
+        default:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      operationId: feedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackRequest"
   /retry:
     post:
       x-speakeasy-usage-example:
@@ -137,6 +161,35 @@ paths:
       operationId: lookup
 components:
   schemas:
+    FeedbackRequest:
+      type: object
+      required:
+        - customer_uuid
+        - phone_number
+        - status
+      properties:
+        customer_uuid:
+          type: string
+          format: uuid
+          description: Your customer UUID, which can be found in the API settings in the dashboard.
+        phone_number:
+          type: string
+          format: phone_number
+          examples: ["+1234567890"]
+          description: An E.164 formatted phone number.
+        status:
+          type: string
+          examples: ["onboarded"]
+          description: The type of the feedback.
+          enum:
+            - onboarded
+    FeedbackResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          examples: ["123e4567-e89b-12d3-a456-4266141740a0"]
+          description: The UUID of the feedback.
     LookupResponse:
       type: object
       properties:
@@ -376,6 +429,8 @@ components:
               * `invalid_os_version` - The provided OS version is invalid.
               * `invalid_device_model` - The provided device model is invalid.
               * `invalid_device_id` - The provided device ID is invalid.
+              * `no_associated_auth_found` - The associated authentication was not found.
+              * `duplicated_feedback_status` - Duplicated feedback status has found.
               * `invalid_template_id` - The provided template ID is invalid.
           enum:
             - invalid_phone_number
@@ -394,6 +449,8 @@ components:
             - invalid_os_version
             - invalid_device_model
             - invalid_device_id
+            - no_associated_auth_found
+            - duplicated_feedback_status
             - invalid_template_id
         message:
           type: string
