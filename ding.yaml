@@ -183,6 +183,7 @@ components:
           description: The type of the feedback.
           enum:
             - onboarded
+            - not_onboarded
     FeedbackResponse:
       type: object
       properties:
