@@ -434,6 +434,7 @@ components:
               * `duplicated_feedback_status` - Duplicated feedback status has found.
               * `invalid_feedback_status` - The provided feedback status is invalid.
               * `invalid_template_id` - The provided template ID is invalid.
+              * `suspended_account` - Your account has been suspended.
           enum:
             - invalid_phone_number
             - internal_server_error
@@ -455,6 +456,7 @@ components:
             - duplicated_feedback_status
             - invalid_feedback_status
             - invalid_template_id
+            - suspended_account
         message:
           type: string
           examples: ["+0 is not a valid phone number"]
