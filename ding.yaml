@@ -465,7 +465,9 @@ components:
           type: string
           description: A link to the documentation that describes the error.
           examples:
-            ["https://docs.ding.live/api-reference/errors#invalid_phone_number"]
+            [
+              "https://docs.prelude.so/api-reference/errors#invalid_phone_number",
+            ]
   securitySchemes:
     APIKey:
       name: x-api-key
