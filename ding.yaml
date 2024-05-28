@@ -382,6 +382,9 @@ components:
         template_id:
           type: string
           description: The template id associated with the message content variant to be sent.
+        correlation_id:
+          type: string
+          description: A unique, user-defined identifier that will be included in webhook events
     CreateAuthenticationResponse:
       type: object
       description: A successful response to an authentication creation request.
