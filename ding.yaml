@@ -31,7 +31,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateAuthenticationResponse"
-        "400":
+        default:
           description: Bad Request
           content:
             application/json:
@@ -60,7 +60,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateCheckResponse"
-        "400":
+        default:
           description: Bad Request
           content:
             application/json:
@@ -150,7 +150,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RetryAuthenticationResponse"
-        "400":
+        default:
           description: Bad Request
           content:
             application/json:
@@ -194,7 +194,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LookupResponse"
-        "400":
+        default:
           description: Bad Request
           content:
             application/json:
