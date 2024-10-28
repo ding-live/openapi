@@ -74,6 +74,11 @@ paths:
               $ref: "#/components/schemas/CreateCheckRequest"
   /authentication/feedback:
     post:
+      x-speakeasy-usage-example:
+        title: Send feedback
+        description: |
+          Send feedback about the authentication process.
+        position: 4
       summary: Send feedback
       tags:
         - OTP
@@ -96,6 +101,38 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/FeedbackRequest"
+  /authentication/{auth_uuid}:
+    get:
+      x-speakeasy-usage-example:
+        title: Get authentication status
+        description: |
+          Get the status of an authentication.
+        position: 5
+      summary: Get authentication status
+      tags:
+        - OTP
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationStatusResponse"
+        default:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      operationId: getAuthenticationStatus
+      parameters:
+        - in: path
+          name: auth_uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The UUID of the authentication.
   /retry:
     post:
       x-speakeasy-usage-example:
@@ -127,7 +164,12 @@ paths:
               $ref: "#/components/schemas/RetryAuthenticationRequest"
   /lookup/{phone_number}:
     get:
-      summary: Perform a phone number lookup
+      x-speakeasy-usage-example:
+        title: Look up for phone number
+        description: |
+          Perform a phone number lookup.
+        position: 6
+      summary: Look up for phone number
       tags:
         - Lookup
       parameters:
@@ -191,6 +233,202 @@ components:
           type: string
           examples: ["123e4567-e89b-12d3-a456-4266141740a0"]
           description: The UUID of the feedback.
+    CheckStatus:
+      type: string
+      examples: ["valid"]
+      description: >
+        The status of the check. Possible values are:
+          * `unknown` - The status is unknown.
+          * `valid` - The code is valid.
+          * `invalid` - The code is invalid.
+          * `without_attempt` - No attempt was sent yet, so a check cannot be completed.
+          * `rate_limited` - The authentication was rate limited and cannot be checked.
+          * `already_validated` - The authentication has already been validated.
+          * `expired_auth` - The authentication has expired and cannot be checked.
+      enum:
+        - unknown
+        - valid
+        - invalid
+        - without_attempt
+        - rate_limited
+        - already_validated
+        - expired_auth
+    AuthenticationStatusEventResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the event.
+          enum:
+            - attempt
+            - check
+            - delivery_status
+            - balance_update
+        created_at:
+          type: string
+          format: date-time
+    AuthenticationStatusResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: The UUID of the corresponding authentication.
+        phone_number:
+          type: string
+          format: phone_number
+          examples: ["+1234567890"]
+          description: An E.164 formatted phone number.
+        template_id:
+          type: string
+          description: The template id associated with the message content variant to be sent.
+        correlation_id:
+          type: string
+          description: A unique, user-defined identifier that will be included in webhook events.
+        created_at:
+          type: string
+          format: date-time
+        signals:
+          type: object
+          description: "[Signals](/guides/prevent-fraud#signals) are data points used to distinguish between fraudulent and legitimate users."
+          properties:
+            ip:
+              type: string
+              format: ipv4
+              description: The IP address of the user's device.
+            device_id:
+              type: string
+              description: Unique identifier for the user's device. For Android, this corresponds to the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
+            device_type:
+              type: string
+              enum:
+                - IOS
+                - ANDROID
+                - WEB
+              description: The type of device the user is using.
+            app_version:
+              type: string
+              description: The version of your application.
+            app_realm:
+              type: string
+              description: The Android SMS Retriever API hash code that identifies your app.
+                This allows you to automatically retrieve and fill the OTP code on Android devices.
+            os_version:
+              type: string
+              description: The version of the user's device operating system.
+            device_model:
+              type: string
+              description: The model of the user's device.
+            is_returning_user:
+              type: boolean
+              description: This signal should do more than just confirm if a user is returning to your app; it should provide a higher level of trust, indicating that the user is genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
+        events:
+          type: array
+          description: Represents a collection of events that occur during the authentication process. Each event captures specific actions and outcomes related to the authentication attempts, checks, delivery statuses, and balance updates. The array can contain different types of events, each with its own structure and properties.
+          items:
+            anyOf:
+              - title: Attempt
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The ID of the attempt.
+                      content:
+                        type: string
+                        description: The content of the attempt.
+                        examples: ["Your code is 123456"]
+                      sender_id:
+                        type: string
+                        description: The sender ID of the attempt.
+                      capability:
+                        type: string
+                        description: The capability of the attempt.
+                        enum:
+                          - rcs
+                          - text
+                          - whatsapp
+                          - viber
+                      attempt_number:
+                        type: integer
+                        description: The attempt number.
+                      status:
+                        type: string
+                        enum:
+                          - pending
+                          - delivered
+                          - failed
+                          - rate_limited
+                          - expired
+                        description: >
+                          The status of the attempt. Possible values are:
+                            * `pending` - The attempt is pending.
+                            * `delivered` - The attempt was delivered.
+                            * `failed` - The attempt failed.
+                            * `rate_limited` - The authentication was rate limited and cannot be retried.
+                            * `expired` - The authentication has expired and cannot be retried.
+                  - $ref: "#/components/schemas/AuthenticationStatusEventResponse"
+              - title: Check
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The ID of the check.
+                      code:
+                        type: string
+                        description: The code that was checked.
+                        examples: ["123456"]
+                      status:
+                        allOf:
+                          - $ref: "#/components/schemas/CheckStatus"
+                  - $ref: "#/components/schemas/AuthenticationStatusEventResponse"
+              - title: Delivery Status
+                allOf:
+                  - type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - unknown
+                          - submitted
+                          - in_transit
+                          - delivered
+                          - undeliverable
+                        description: >
+                          The status of the delivery. Possible values are:
+                            * `unknown` - The status of the delivery is unknown.
+                            * `submitted` - The message has been submitted to the carrier.
+                            * `in_transit` - The message is in transit to the recipient.
+                            * `delivered` - The message has been delivered to the recipient.
+                            * `undeliverable` - The message could not be delivered to the recipient.
+                      attempt_id:
+                        type: string
+                        description: The ID of the attempt.
+                      attempt_number:
+                        type: integer
+                        description: The attempt number.
+                  - $ref: "#/components/schemas/AuthenticationStatusEventResponse"
+              - title: Balance Update
+                allOf:
+                  - type: object
+                    properties:
+                      balance_update_type:
+                        type: string
+                        enum:
+                          - unknown
+                          - authentication
+                          - attempt
+                          - attempt_pending
+                          - attempt_success
+                          - authentication_pending
+                          - authentication_success
+                      amount:
+                        type: number
+                        format: double
+                        description: The amount of the balance update.
+                  - $ref: "#/components/schemas/AuthenticationStatusEventResponse"
+
     LookupResponse:
       type: object
       properties:
@@ -221,19 +459,47 @@ components:
         line_type:
           type: string
           examples: ["Mobile"]
-          description: The type of phone line.
           enum:
+            - CallingCards
             - FixedLine
+            - InternetServiceProvider
+            - LocalRate
             - Mobile
-            - TollFree
-            - PremiumRate
-            - SharedCost
-            - Voip
+            - Other
             - Pager
-            - VoiceMail
-            - UniversalAccess
+            - PayPhone
+            - PremiumRate
+            - Satellite
             - Service
+            - SharedCost
+            - ShortCodesCommercial
+            - TollFree
+            - UniversalAccess
             - Unknown
+            - VPN
+            - VoiceMail
+            - Voip
+          description: >
+            The type of phone line.
+              * `CallingCards` - Numbers that are associated with providers of pre-paid domestic and international calling cards.
+              * `FixedLine` - Landline phone numbers.
+              * `InternetServiceProvider` - Numbers reserved for ISPs.
+              * `LocalRate` - Numbers that can be assigned non-geographically.
+              * `Mobile` - Mobile phone numbers.
+              * `Other` - Other types of services.
+              * `Pager` - Number ranges specifically allocated to paging devices.
+              * `PayPhone` - Allocated numbers for payphone kiosks in some countries.
+              * `PremiumRate` - Landline numbers where the calling party pays more than standard.
+              * `Satellite` - Satellite phone numbers.
+              * `Service` - Automated applications.
+              * `SharedCost` - Specific landline ranges where the cost of making the call is shared between the calling and called party.
+              * `ShortCodesCommercial` - Short codes are memorable, easy-to-use numbers, like the UK's NHS 111, often sold to businesses. Not available in all countries.
+              * `TollFree` - Number where the called party pays for the cost of the call not the calling party.
+              * `UniversalAccess` - Number ranges reserved for Universal Access initiatives.
+              * `Unknown` - Unknown phone number type.
+              * `VPN` - Numbers are used exclusively within a private telecommunications network, connecting the operator's terminals internally and not accessible via the public telephone network.
+              * `VoiceMail` - A specific category of Interactive Voice Response (IVR) services.
+              * `Voip` - Specific ranges for providers of VoIP services to allow incoming calls from the regular telephony network.
     RetryAuthenticationResponse:
       type: object
       properties:
@@ -285,6 +551,7 @@ components:
           type: string
           format: uuid
           description: The authentication UUID that was returned when you created the authentication.
+
     CreateCheckResponse:
       type: object
       properties:
@@ -293,23 +560,8 @@ components:
           format: uuid
           description: The UUID of the corresponding authentication.
         status:
-          type: string
-          examples: ["valid"]
-          description: >
-            The status of the check. Possible values are:
-              * `valid` - The code is valid.
-              * `invalid` - The code is invalid.
-              * `without_attempt` - No attempt was sent yet, so a check cannot be completed.
-              * `rate_limited` - The authentication was rate limited and cannot be checked.
-              * `already_validated` - The authentication has already been validated.
-              * `expired_auth` - The authentication has expired and cannot be checked.
-          enum:
-            - valid
-            - invalid
-            - without_attempt
-            - rate_limited
-            - already_validated
-            - expired_auth
+          allOf:
+            - $ref: "#/components/schemas/CheckStatus"
     CreateCheckRequest:
       type: object
       required:
@@ -361,14 +613,16 @@ components:
         app_version:
           type: string
           description: The version of your application.
+        sender_id:
+          type: string
+          description: The Sender ID to use when sending the message.
         callback_url:
           type: string
           format: url
           description: A webhook URL to which delivery statuses will be sent.
         app_realm:
           type: string
-          description:
-            The Android SMS Retriever API hash code that identifies your app.
+          description: The Android SMS Retriever API hash code that identifies your app.
             This allows you to automatically retrieve and fill the OTP code on Android devices.
         os_version:
           type: string
@@ -385,6 +639,11 @@ components:
         correlation_id:
           type: string
           description: A unique, user-defined identifier that will be included in webhook events
+        locale:
+          type: string
+          format: BCP-47
+          examples: ["en-US", "el-GR", "fr-FR"]
+          description: A BCP-47 locale indicating the language the SMS should be sent to; if this is not set, the SMS will be sent to the language specified by the country code of the message. If we don't support the language set, the message will be sent in US English (en-US).
     CreateAuthenticationResponse:
       type: object
       description: A successful response to an authentication creation request.
@@ -420,27 +679,29 @@ components:
           examples: ["invalid_phone_number"]
           description: A machine-readable code that describes the error.
           enum:
-            - invalid_phone_number
-            - internal_server_error
-            - bad_request
             - account_invalid
-            - negative_balance
-            - invalid_line
-            - unsupported_region
-            - invalid_auth_uuid
-            - invalid_app_realm
-            - unsupported_app_realm_device_type
             - app_realm_require_device_type
+            - bad_request
             - blocked_number
-            - invalid_app_version
-            - invalid_os_version
-            - invalid_device_model
-            - invalid_device_id
-            - no_associated_auth_found
             - duplicated_feedback_status
+            - internal_server_error
+            - invalid_app_realm
+            - invalid_app_version
+            - invalid_auth_uuid
+            - invalid_device_id
+            - invalid_device_model
             - invalid_feedback_status
+            - invalid_line
+            - invalid_os_version
+            - invalid_phone_number
+            - invalid_sender_id
             - invalid_template_id
+            - negative_balance
+            - no_associated_auth_found
             - suspended_account
+            - unauthorized_sender_id
+            - unsupported_app_realm_device_type
+            - unsupported_region
         message:
           type: string
           examples: ["+0 is not a valid phone number"]
@@ -448,10 +709,7 @@ components:
         doc_url:
           type: string
           description: A link to the documentation that describes the error.
-          examples:
-            [
-              "https://docs.prelude.so/api-reference/errors#invalid_phone_number",
-            ]
+          examples: ["https://docs.prelude.so/api-reference/errors#invalid_phone_number"]
   securitySchemes:
     APIKey:
       name: x-api-key
