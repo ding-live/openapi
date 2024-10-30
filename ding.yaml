@@ -408,6 +408,10 @@ components:
                       attempt_number:
                         type: integer
                         description: The attempt number.
+                      originated_at:
+                        type: string
+                        format: date-time
+                        description: The date and time from the provider.
                   - $ref: "#/components/schemas/AuthenticationStatusEventResponse"
               - title: Balance Update
                 allOf:
