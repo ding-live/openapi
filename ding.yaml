@@ -5,6 +5,8 @@ info:
   title: Ding
   version: 1.0.0
   description: "The OTP API allows you to send authentication codes to your users using their phone numbers."
+  contact:
+    email: hello@ding.live
 servers:
   - url: "https://api.ding.live/v1"
     description: The production Ding API server
@@ -31,7 +33,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateAuthenticationResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -60,7 +62,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateCheckResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -89,7 +91,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FeedbackResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -118,7 +120,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthenticationStatusResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -150,7 +152,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RetryAuthenticationResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -194,7 +196,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LookupResponse"
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
