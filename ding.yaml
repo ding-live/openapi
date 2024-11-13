@@ -462,6 +462,9 @@ components:
         number_ported:
           type: boolean
           description: Whether the phone number has been ported.
+        temporary_phone_number:
+          type: boolean
+          description: Whether the phone number is in our database of disposable, temporary phone numbers
         line_type:
           type: string
           examples: ["Mobile"]
