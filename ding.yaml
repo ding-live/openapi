@@ -304,8 +304,10 @@ components:
             device_type:
               type: string
               enum:
-                - IOS
                 - ANDROID
+                - IOS
+                - IPADOS
+                - TVOS
                 - WEB
               description: The type of device the user is using.
             app_version:
