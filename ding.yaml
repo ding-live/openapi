@@ -182,6 +182,18 @@ paths:
             format: uuid
             description: Your customer UUID, which can be found in the API settings in the dashboard.
           required: true
+        - in: query
+          name: type
+          schema:
+            type: array
+            format: string
+            items:
+              type: string
+              enum:
+                - cnam
+            description: >
+              Optional features. Possible values are:
+                * `cnam` - Retrieve CNAM (Caller ID Name) along with other information. Contact us if you need to use this functionality.
         - in: path
           name: phone_number
           required: true
@@ -315,7 +327,8 @@ components:
               description: The version of your application.
             app_realm:
               type: string
-              description: The Android SMS Retriever API hash code that identifies your app.
+              description:
+                The Android SMS Retriever API hash code that identifies your app.
                 This allows you to automatically retrieve and fill the OTP code on Android devices.
             os_version:
               type: string
@@ -453,6 +466,9 @@ components:
           type: string
           examples: ["410"]
           description: The mobile network code of the phone number.
+        caller_name:
+          type: string
+          description: The CNAM (Caller ID Name) associated with the phone number. Contact us if you need to use this functionality. Once enabled, put `cnam` option to `type` query parameter.
         carrier:
           type: string
           examples: ["AT&T"]
@@ -633,7 +649,8 @@ components:
           description: A webhook URL to which delivery statuses will be sent.
         app_realm:
           type: string
-          description: The Android SMS Retriever API hash code that identifies your app.
+          description:
+            The Android SMS Retriever API hash code that identifies your app.
             This allows you to automatically retrieve and fill the OTP code on Android devices.
         os_version:
           type: string
@@ -720,7 +737,10 @@ components:
         doc_url:
           type: string
           description: A link to the documentation that describes the error.
-          examples: ["https://docs.prelude.so/api-reference/errors#invalid_phone_number"]
+          examples:
+            [
+              "https://docs.prelude.so/api-reference/errors#invalid_phone_number",
+            ]
   securitySchemes:
     APIKey:
       name: x-api-key
