@@ -18,6 +18,7 @@ tags:
 paths:
   /authentication:
     post:
+      description: Send an OTP code to a user's phone number.
       x-speakeasy-usage-example:
         title: Send a code
         description: |
@@ -47,6 +48,7 @@ paths:
               $ref: "#/components/schemas/CreateAuthenticationRequest"
   /check:
     post:
+      description: Check that a code entered by a user is valid.
       x-speakeasy-usage-example:
         title: Check a code
         description: |
@@ -76,6 +78,7 @@ paths:
               $ref: "#/components/schemas/CreateCheckRequest"
   /authentication/feedback:
     post:
+      description: Send feedback about the authentication process.
       x-speakeasy-usage-example:
         title: Send feedback
         description: |
@@ -105,6 +108,7 @@ paths:
               $ref: "#/components/schemas/FeedbackRequest"
   /authentication/{auth_uuid}:
     get:
+      description: Get the status of an authentication.
       x-speakeasy-usage-example:
         title: Get authentication status
         description: |
@@ -137,6 +141,7 @@ paths:
             description: The UUID of the authentication.
   /retry:
     post:
+      description: Perform a retry if a user has not received the code.
       x-speakeasy-usage-example:
         title: Perform a retry
         description: |
@@ -166,6 +171,7 @@ paths:
               $ref: "#/components/schemas/RetryAuthenticationRequest"
   /lookup/{phone_number}:
     get:
+      description: Perform a phone number lookup.
       x-speakeasy-usage-example:
         title: Look up for phone number
         description: |
