@@ -304,7 +304,7 @@ components:
           format: date-time
         signals:
           type: object
-          description: "[Signals](/guides/prevent-fraud#signals) are data points used to distinguish between fraudulent and legitimate users."
+          description: "Signals are data points used to distinguish between fraudulent and legitimate users."
           properties:
             ip:
               type: string
@@ -338,7 +338,7 @@ components:
               description: The model of the user's device.
             is_returning_user:
               type: boolean
-              description: This signal should do more than just confirm if a user is returning to your app; it should provide a higher level of trust, indicating that the user is genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
+              description: This signal should do more than just confirm if a user is returning to your app; it should provide a higher level of trust, indicating that the user is genuine. For more details, refer to [Signals](/verify/v2/documentation/prevent-fraud#signals).
         events:
           type: array
           description: Represents a collection of events that occur during the authentication process. Each event captures specific actions and outcomes related to the authentication attempts, checks, delivery statuses, and balance updates. The array can contain different types of events, each with its own structure and properties.
@@ -660,7 +660,7 @@ components:
           description: The model of the user's device.
         is_returning_user:
           type: boolean
-          description: This signal should do more than just confirm if a user is returning to your app; it should provide a higher level of trust, indicating that the user is genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
+          description: This signal should do more than just confirm if a user is returning to your app; it should provide a higher level of trust, indicating that the user is genuine.
         template_id:
           type: string
           description: The template id associated with the message content variant to be sent.
@@ -739,7 +739,7 @@ components:
           description: A link to the documentation that describes the error.
           examples:
             [
-              "https://docs.prelude.so/api-reference/errors#invalid_phone_number",
+              "https://docs.prelude.so/verify/v1/documentation/errors#invalid_phone_number",
             ]
   securitySchemes:
     APIKey:
