@@ -21,8 +21,7 @@ paths:
       description: Send an OTP code to a user's phone number.
       x-speakeasy-usage-example:
         title: Send a code
-        description: |
-          Send an OTP code to a user's phone number.
+        description: Send an OTP code to a user's phone number.
         position: 1
       summary: Send a code
       tags:
@@ -51,8 +50,7 @@ paths:
       description: Check that a code entered by a user is valid.
       x-speakeasy-usage-example:
         title: Check a code
-        description: |
-          Check that a code entered by a user is valid.
+        description: Check that a code entered by a user is valid.
         position: 2
       summary: Check a code
       tags:
@@ -111,8 +109,7 @@ paths:
       description: Get the status of an authentication.
       x-speakeasy-usage-example:
         title: Get authentication status
-        description: |
-          Get the status of an authentication.
+        description: Get the status of an authentication.
         position: 5
       summary: Get authentication status
       tags:
@@ -144,8 +141,7 @@ paths:
       description: Perform a retry if a user has not received the code.
       x-speakeasy-usage-example:
         title: Perform a retry
-        description: |
-          Perform a retry if a user has not received the code.
+        description: Perform a retry if a user has not received the code.
         position: 3
       summary: Perform a retry
       tags:
@@ -174,8 +170,7 @@ paths:
       description: Perform a phone number lookup.
       x-speakeasy-usage-example:
         title: Look up for phone number
-        description: |
-          Perform a phone number lookup.
+        description: Perform a phone number lookup.
         position: 6
       summary: Look up for phone number
       tags:
