@@ -4,7 +4,7 @@ security:
 info:
   title: Ding
   version: 1.0.0
-  description: "The OTP API allows you to send authentication codes to your users using their phone numbers."
+  description: "The OTP API allows you to send authentication codes to your users using their phone numbers. The V1 API is **deprecated**. Technical support will end by **October 2025** and will be **removed by April 2026**. No new features and functionality will be added to the V1 API."
   contact:
     email: hello@ding.live
 servers:
@@ -18,6 +18,7 @@ tags:
 paths:
   /authentication:
     post:
+      deprecated: true
       description: Send an OTP code to a user's phone number.
       x-speakeasy-usage-example:
         title: Send a code
@@ -47,6 +48,7 @@ paths:
               $ref: "#/components/schemas/CreateAuthenticationRequest"
   /check:
     post:
+      deprecated: true
       description: Check that a code entered by a user is valid.
       x-speakeasy-usage-example:
         title: Check a code
@@ -76,6 +78,7 @@ paths:
               $ref: "#/components/schemas/CreateCheckRequest"
   /authentication/feedback:
     post:
+      deprecated: true
       description: Send feedback about the authentication process.
       x-speakeasy-usage-example:
         title: Send feedback
@@ -106,6 +109,7 @@ paths:
               $ref: "#/components/schemas/FeedbackRequest"
   /authentication/{auth_uuid}:
     get:
+      deprecated: true
       description: Get the status of an authentication.
       x-speakeasy-usage-example:
         title: Get authentication status
@@ -138,6 +142,7 @@ paths:
             description: The UUID of the authentication.
   /retry:
     post:
+      deprecated: true
       description: Perform a retry if a user has not received the code.
       x-speakeasy-usage-example:
         title: Perform a retry
@@ -167,6 +172,7 @@ paths:
               $ref: "#/components/schemas/RetryAuthenticationRequest"
   /lookup/{phone_number}:
     get:
+      deprecated: true
       description: Perform a phone number lookup.
       x-speakeasy-usage-example:
         title: Look up for phone number
