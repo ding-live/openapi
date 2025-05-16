@@ -6,7 +6,7 @@ info:
   version: 1.0.0
   description: "The OTP API allows you to send authentication codes to your users using their phone numbers. The V1 API is **deprecated**. Technical support will end by **October 2025** and will be **removed by April 2026**. No new features and functionality will be added to the V1 API."
   contact:
-    email: hello@ding.live
+    email: support@prelude.so
 servers:
   - url: "https://api.ding.live/v1"
     description: The production Ding API server
@@ -334,8 +334,7 @@ components:
               description: The version of your application.
             app_realm:
               type: string
-              description:
-                The Android SMS Retriever API hash code that identifies your app.
+              description: The Android SMS Retriever API hash code that identifies your app.
                 This allows you to automatically retrieve and fill the OTP code on Android devices.
             os_version:
               type: string
@@ -656,8 +655,7 @@ components:
           description: A webhook URL to which delivery statuses will be sent.
         app_realm:
           type: string
-          description:
-            The Android SMS Retriever API hash code that identifies your app.
+          description: The Android SMS Retriever API hash code that identifies your app.
             This allows you to automatically retrieve and fill the OTP code on Android devices.
         os_version:
           type: string
@@ -744,10 +742,7 @@ components:
         doc_url:
           type: string
           description: A link to the documentation that describes the error.
-          examples:
-            [
-              "https://docs.prelude.so/verify/v1/documentation/errors#invalid_phone_number",
-            ]
+          examples: ["https://docs.prelude.so/verify/v1/documentation/errors#invalid_phone_number"]
   securitySchemes:
     APIKey:
       name: x-api-key
